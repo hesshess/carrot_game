@@ -67,8 +67,10 @@ header {
 }
 
 .game__field {
+  position: relative;
   width: 100%;
   height: 100%;
+  margin-top: 40px;
 }
 
 .pop-up {
@@ -79,6 +81,10 @@ header {
   background-color: #00000090;
   color: white;
   transform: translateY(-150%);
+}
+
+.pop-up--hide {
+  display: none;
 }
 
 .pop-up__refresh {
