@@ -2,6 +2,29 @@
 import Field from './field.js';
 import * as sound from './sound.js';
 
+// Builder Pattern
+export default class GameBuilder{
+    withGameDuration(duration){
+        this.gameDuration= duration;
+        return this;
+    }
+    withCarrotCount(num){
+        this.carrotCount = num;
+        return this;
+    }
+    withBugCount(num){
+        this.bugCount = num;
+        return this;
+}
+    build(){
+        console.log(this);
+        return new Game(
+            this.gameDuration, //
+            this.carrotCount,
+            this.bugCount
+        )
+    }
+
 export default class Game{
     constructor(gameDuration, carrotCount, bugCount){
         this.gameDuration = gameDuration;
@@ -12,7 +35,7 @@ export default class Game{
         this.timerIndicator = document.querySelector('.game__timer');
         this.gameScore = document.querySelector('.game__score');
         this.gameBtn.addEventListener('click', () => {
-            if (started) {
+            if (this. started) {
               this.stop();
             } else {
               this.start();
@@ -26,7 +49,7 @@ export default class Game{
         this.timer = undefined;
     }
 
-    setGAmeStopListener(onGameStop){
+    setGameStopListener(onGameStop){
         this.onGameStop = onGameStop;
     }
 
@@ -43,7 +66,6 @@ stop() {
     this.started = false;
     this.stopGameTimer();
     this.hideGameButton();
-    // this.gameFinishedBanner.showWithText('REPLAY❓');
     sound.playAlert();
     sound.stopBackground();
     this.onGameStop && this.onGameStop('cancel');
@@ -59,7 +81,6 @@ finish(win) {
     }
     this.stopGameTimer();
     sound.stopBackground()
-    // this.gameFinishedBanner.showWithText(win ? 'YOU WON 🎉' : 'YOU LOST 💩');
     this.onGameStop && this.onGameStop(win? 'win' : 'lose');
   }
   
@@ -71,16 +92,16 @@ finish(win) {
         if (item ==='carrot') {
             this.score++;
             this.updateScoreBoard();
-          if (score === CARROT_COUNT) {
-            this.finishGame(true);
+          if (this.score === this.carrotCount) {
+            this.finish(true);
           }
         } else if (item ==='bug') {
-            this.finishGame(false);
+            this.finish(false);
         }
       }
 
 showStopButton() {
-    const icon = gameBtn.querySelector('.fas');
+    const icon = this.gameBtn.querySelector('.fas');
     icon.classList.add('fa-stop');
     icon.classList.remove('fa-play');
     this.gameBtn.style.visibility = 'visible';
@@ -96,12 +117,12 @@ showStopButton() {
   }
   
   startGameTimer() {
-    let remainingTimeSec = GAME_DURATION_SEC;
+    let remainingTimeSec = this.gameDuration;
     this.updateTimerText(remainingTimeSec);
     this.timer = setInterval(() => {
       if (remainingTimeSec <= 0) {
-        clearInterval(timer);
-        this.finishGame(score === CARROT_COUNT);
+        clearInterval(this.timer);
+        this.finish(this.score === this.carrotCount);
         return;
       }
       this. updateTimerText(--remainingTimeSec);
@@ -109,7 +130,7 @@ showStopButton() {
   }
   
   stopGameTimer() {
-    clearInterval(timer);
+    clearInterval(this.timer);
   }
   
   updateTimerText(time) {
@@ -120,12 +141,12 @@ showStopButton() {
   
   initGame() {
     this.score = 0;
-    this.gameScore.innerText = CARROT_COUNT;
+    this.gameScore.innerText = this.carrotCount;
     this.gameField.init();
   }
   
   updateScoreBoard() {
-    this. gameScore.innerText = CARROT_COUNT - score;
+    this.gameScore.innerText = this.carrotCount - this.score;
   }
   
 }

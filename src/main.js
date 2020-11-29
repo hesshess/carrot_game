@@ -1,25 +1,30 @@
 'use strict';
 import PopUp from './popup.js';
-import Game from './game.js';
-
-const CARROT_COUNT = 20;
-const BUG_COUNT = 20;
-const GAME_DURATION_SEC = 20;
+import GameBuilder from './game.js';
 
 const gameFinishedBanner = new PopUp();
-gameFinishedBanner.setClickListener(()=>{
-  startGame();
-})
 
-cost game = new Game(GAME_DURATION_SEC, CARROT_COUNT, BUG_COUNT);
+const game = new GameBuilder()
+  .withGameDuration(5)
+  .withCarrotCount(3)
+  .withBugCount(3)
+  .build()
+
 game.setGameStopListener((reason)=>{
   let message;
   switch(reason){
-    case 'cancel':
+    case 'cancel':'REPLAY❓'
       break;
-      case 'win':
+    case 'win': 'YOU WON 🎉'
+      break;
+    case 'lose': 'YOU LOST 💩'
         break;
-        case 'lose':
-          break;
+      default:
+        throw new Error('not valid reason');
   }
+  gameFinishedBanner.showWithText(message);
+})
+
+gameFinishedBanner.setClickListener(()=>{
+  game.start();
 })
